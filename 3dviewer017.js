@@ -81,7 +81,7 @@ var recorder;
 var blobUrl;
 var recmode = 0;
 
-document.write(
+/* document.write(
 	"<style>",
 	"    HTML{",
 	"	margin:0px;",
@@ -300,7 +300,7 @@ document.write(
 
 	"</div>",
 	"<script>function toggleSettings(){ var m = document.getElementById('settings-menu'); if(m.style.display==='flex') { m.style.display='none'; m.classList.remove('active'); } else { m.style.display='flex'; setTimeout(function(){m.classList.add('active')}, 10); } }</script>"
-);
+); */
 
 var ThView = function (arg) {
 	this.d2r = function (d) {
@@ -336,8 +336,9 @@ var ThView = function (arg) {
 
 // if(!Filenamedisplay) document.getElementById("filename").style.visibility = "hidden";
 
-window.onunload = function (event) {
-	event.preventDefault();
+// Replaced deprecated onunload with pagehide for better modern browser support
+window.addEventListener('pagehide', function (event) {
+	// event.preventDefault(); // Not needed for pagehide
 	if (bClear) return;
 	var array = [];
 	var obj = {
@@ -362,7 +363,7 @@ window.onunload = function (event) {
 		var nCok = "" + dltx.toFixed(1) + "," + dlty.toFixed(1) + "," + rota.toFixed(1) + "," + stType + "," + swap / 1 + "," + ssint + "," + vlevel + "," + vmuted / 1 + "," + zoom + "&" + st180 + "&" + st360;
 		document.cookie = "" + nCok + "; expires=" + expire.toUTCString();
 	}
-}
+});
 
 function loadlocalStorage() {
 	try {
@@ -513,6 +514,10 @@ ThView.prototype.show = function () {
 	} catch (err) { }
 
 	document.addEventListener('touchstart', function (e) {
+		// Fix: Allow touch interaction on UI elements (menus, controls)
+		if (e.target.closest('#settings-menu') || e.target.closest('#dropmenu') || e.target.closest('#controller-box')) {
+			return true; // Allow default behavior (scrolling, clicking)
+		}
 		this.className = "hover";
 		start = e.touches[0].pageX;
 		dist = 0;
@@ -542,6 +547,10 @@ ThView.prototype.show = function () {
 		return true;
 	}, { passive: false });
 	document.addEventListener('touchmove', function (e) {
+		// Fix: Allow touch interaction on UI elements (menus, controls)
+		if (e.target.closest('#settings-menu') || e.target.closest('#dropmenu') || e.target.closest('#controller-box')) {
+			return true; // Allow default behavior (scrolling)
+		}
 		e.preventDefault();
 		if (showbtn) curmtime = menutime;
 		else showmenu();
@@ -1245,6 +1254,7 @@ ThView.prototype.show = function () {
 			if (video) {
 				video.pause();
 				video.currentTime = 0;
+				if (video.parentNode) video.parentNode.removeChild(video);
 				video = null;
 			}
 		}
@@ -1381,6 +1391,7 @@ ThView.prototype.show = function () {
 		if (video) {
 			video.pause();
 			video.currentTime = 0;
+			if (video.parentNode) video.parentNode.removeChild(video);
 			video = null;
 		}
 		var file = files[ncnt];
@@ -1450,16 +1461,43 @@ ThView.prototype.show = function () {
 				videoend();
 			}, true);
 			video.src = createObjectURL(file);
+			// Attach to DOM to ensure rendering (hidden but active)
+			video.style.position = "absolute";
+			video.style.opacity = "0";
+			video.style.zIndex = "-1";
+			video.style.left = "0";
+			video.style.top = "0";
+			document.body.appendChild(video);
 			video.setAttribute('playsinline', '');
-			//	window.makeVideoPlayableInline(video);
-			video.play();
+			video.load(); // Force load
+			// Handle Play Promise to avoid "Uncaught (in promise) DOMException"
+			var playPromise = video.play();
+			if (playPromise !== undefined) {
+				playPromise.then(_ => {
+					// Play started
+				}).catch(error => {
+					console.warn("Auto-play prevented:", error);
+					// Fallback to muted autoplay
+					video.muted = true;
+					var playPromise2 = video.play();
+					if (playPromise2 !== undefined) {
+						playPromise2.catch(err => console.error("Muted Autoplay also failed:", err));
+					}
+				});
+			}
 			isVideo = true;
+			isStart = true;
 			video.volume = vlevel;
 			video.muted = vmuted;
 			document.getElementById("progtime").innerHTML = "Push Play button!";
 			if (showbtn) showmenu();
 			render();
 		} else {
+			// ... (Skipping to makeframe modifications)
+			if (video != null && ctx != null && video.readyState >= 2) {
+				ctx.drawImage(video, 0, 0);
+				align();
+			}
 			var img;
 			img = document.createElement('img');
 			var imgload = false;
@@ -1564,6 +1602,8 @@ ThView.prototype.show = function () {
 		if (video.paused) return;
 		vw = video.videoWidth;
 		vh = video.videoHeight;
+		vw = video.videoWidth;
+		vh = video.videoHeight;
 		if (vw / 2 < 600) vc = 512;
 		else if (vw / 2 < 1200) vc = 1024;
 		else vc = 2048;
@@ -1598,6 +1638,8 @@ ThView.prototype.show = function () {
 			canvasl.width = vc;
 			if (ctxl == null) ctxl = canvasl.getContext('2d');
 			texturel = new THREE.Texture(canvasl);
+			texturel.minFilter = THREE.LinearFilter;
+			texturel.generateMipmaps = false;
 			texturel.flipY = true;
 			if (canvasr == null) canvasr = document.createElement(
 				'canvas');
@@ -1605,6 +1647,8 @@ ThView.prototype.show = function () {
 			canvasr.width = vc;
 			if (ctxr == null) ctxr = canvasr.getContext('2d');
 			texturer = new THREE.Texture(canvasr);
+			texturer.minFilter = THREE.LinearFilter;
+			texturer.generateMipmaps = false;
 			texturer.flipY = true;
 			texturer.wrapS = THREE.RepeatWrapping;
 			if (stType == 9) texturer.repeat.x = - 1;
@@ -1620,7 +1664,7 @@ ThView.prototype.show = function () {
 			resetalign();
 			zoomset(zoomtmp);
 		}
-		if (video != null && ctx != null) {
+		if (video != null && ctx != null && video.readyState >= 2) {
 			ctx.drawImage(video, 0, 0);
 			align();
 		}
@@ -1794,6 +1838,7 @@ ThView.prototype.show = function () {
 				material.map = texturer;
 				plane.rotation.set(0, 0, -rota * Math.PI / 180);
 			}
+			material.needsUpdate = true; // Fix: Ensure material updates with new texture
 			effect.render0(scene, camera);
 			if (swap) {
 				material.map = texturer;

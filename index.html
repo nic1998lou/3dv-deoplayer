@@ -8,18 +8,292 @@
         content="width=device-width,height=device-height, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <link rel="apple-touch-icon" href="icon.png" />
     <title>HTML5 3D Viewer</title>
+    <style>
+        /* Extracted from 3dviewer017.js */
+        HTML {
+            margin: 0px;
+            width: 100%;
+            height: 100%;
+            overflow: clip;
+            -ms-overflow-style: none;
+            overflow: -moz-scrollbars-none;
+            scrollbar-width: none;
+        }
+
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+        input {
+            display: none;
+        }
+
+        label {
+            font-size: 18px;
+            background: #000;
+            color: #fff;
+            cursor: pointer;
+            text-align: center;
+            border: solid 2px #aaaaaa;
+            display: inline-block;
+            line-height: 44px;
+        }
+
+        button {
+            font-size: 18px;
+            width: 70px;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.6);
+            border-color: #888888 #888888 #888888 #888888;
+            color: #aaaaaa;
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
+
+        button:active {
+            background-color: #444444;
+            color: #00ffff;
+        }
+
+        #filename {
+            display: inline-block;
+            font-size: 18px;
+            height: 20px;
+            width: 200px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #aaaaaa;
+            padding: 5px 5px;
+            margin-top: 0px;
+            margin-left: 1px;
+        }
+
+        #progtime {
+            display: inline-block;
+            font-size: 18px;
+            height: 26px;
+            width: 180px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #aaaaaa;
+            margin-top: 0px;
+        }
+
+        #volumelevel {
+            display: inline-block;
+            font-size: 18px;
+            height: 26px;
+            width: 150px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #aaaaaa;
+            margin-top: 0px;
+            margin-left: 60px;
+        }
+
+        #dropmenu {
+            list-style-type: none;
+            width: 860px;
+            height: 4px;
+            margin-top: 0px;
+            background: transparent;
+        }
+
+        #dropmenu li {
+            position: relative;
+            float: left;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        #dropmenu li ul {
+            position: absolute;
+            top: 100%;
+            left: -50%;
+            list-style: none;
+            margin: 0;
+            z-index: 2;
+            border-radius: 0 0 3px 3px;
+        }
+
+        #dropmenu li ul li {
+            overflow: hidden;
+            width: 100%;
+            height: 0px;
+            -moz-transition: .2s;
+            -webkit-transition: .2s;
+            -o-transition: .2s;
+            -ms-transition: .2s;
+            transition: .2s;
+        }
+
+        #dropmenu li:hover ul li {
+            overflow: visible;
+            height: 100%;
+        }
+
+        #progress-wrap {
+            width: 100%;
+            height: 1rem;
+        }
+
+        #progress-out {
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 3px;
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            transform: scaleY(0.5);
+            transition: 0.3s;
+        }
+
+        #progress-out:hover {
+            transform: scaleY(1.0);
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+        }
+
+        #progress-in {
+            margin: 0 auto 0 0;
+            width: 100%;
+            height: 100%;
+            background-color: #3F51B5;
+            border-radius: 3px;
+            transform-origin: top left;
+            transition: 0.1s;
+        }
+
+        #controller-box {
+            text-align: center;
+        }
+    </style>
     <script type="text/javascript">var Filenamedisplay = 1;</script>
     <script type="text/javascript" src="three.min.js"></script>
-    <script type="text/javascript" src="3dviewer017.js?" + new Date().getTime()></script>
+    <script type="text/javascript">
+        document.write('<script src="3dviewer017.js?' + new Date().getTime() + '" type="text/javascript"><\/script>');
+    </script>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
 </head>
 
 <body>
-    <script type="text/javascript">
-        var img1 = new ThView({
+    <div id='image1' style='position:absolute;top:0px;left:0px'></div>
+    <div id='btn' class='top-bar'>
+        <ul id='dropmenu'>
+            <NOBR>
+                <li><button id='button9' class='btn-circle' title='Close'><i class='fa-solid fa-xmark'></i></button>
+                </li>
+                <li><button id='button90' class='btn-circle' title='Record'><i class='fa-solid fa-video'></i></button>
+                </li>
+                <li><button id='button6' class='btn-circle' title='Fullscreen'><i
+                            class='fa-solid fa-expand'></i></button></li>
+                <li><button id='button8' class='btn-circle' title='Fit'><svg fill='#ffffff' width='18px' height='18px'
+                            viewBox='0 0 32 32' id='icon' xmlns='http://www.w3.org/2000/svg'>
+                            <g id='SVGRepo_bgCarrier' stroke-width='0'></g>
+                            <g id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round'></g>
+                            <g id='SVGRepo_iconCarrier'>
+                                <title>Ajustável à tela</title>
+                                <polygon points='22 16 24 16 24 8 16 8 16 10 22 10 22 16'></polygon>
+                                <polygon points='8 24 16 24 16 22 10 22 10 16 8 16 8 24'></polygon>
+                                <path
+                                    d='M26,28H6a2.0023,2.0023,0,0,1-2-2V6A2.0023,2.0023,0,0,1,6,4H26a2.0023,2.0023,0,0,1,2,2V26A2.0023,2.0023,0,0,1,26,28ZM6,6V26H26.0012L26,6Z'>
+                                </path>
+                            </g>
+                        </svg></button></li>
+                <li style='display:none !important;'><button id='button40' class='btn-circle' title='Slideshow'><i
+                            class='fa-solid fa-images'></i></button>
+                    <ul>
+                        <li><button id='button41' style='height:40px;width:100px;'>Off</button></li>
+                        <li><button id='button42' style='height:40px;width:100px;'>3s</button></li>
+                        <li><button id='button43' style='height:40px;width:100px;'>5s</button></li>
+                        <li><button id='button44' style='height:40px;width:100px;'>7s</button></li>
+                        <li><button id='button45' style='height:40px;width:100px;'>10s</button></li>
+                    </ul>
+                </li>
+                <li><button id='button1' class='btn-circle' title='Previous' style='display:none !important;'><i
+                            class='fa-solid fa-chevron-left'></i></button></li>
+                <li><button id='button2' class='btn-circle' title='Next' style='display:none !important;'><i
+                            class='fa-solid fa-chevron-right'></i></button></li>
+                <li><button id='button60' class='btn-circle' title='Files'><i
+                            class='fa-solid fa-folder-open'></i></button>
+                    <ul>
+                        <li><input class='test' type='file' id='files' name='files[]' multiple><label for='files'
+                                style='height:44px; width:120px;'>Full SBS</label></li>
+                        <li><input class='test' type='file' id='files2' name='files[]' multiple><label for='files2'
+                                style='height:44px; width:120px;'>Half SBS</label></li>
+                        <li><input class='test' type='file' id='files3' name='files[]' multiple><label for='files3'
+                                style='height:44px; width:120px;'>Full T/B</label></li>
+                        <li><input class='test' type='file' id='files4' name='files[]' multiple><label for='files4'
+                                style='height:44px; width:120px;'>Half T/B</label></li>
+                    </ul>
+                </li>
+                <li><button id='button50' class='btn-circle' title='Help'><i
+                            class='fa-solid fa-circle-question'></i></button>
+                    <ul>
+                        <li><button id='button52' style='height:40px;width:120px;'>English</button></li>
+                        <li><button id='button51' style='height:40px;width:120px;'>Japanese</button></li>
+                        <li><button id='button53' style='height:40px;width:120px;'>Version</button></li>
+                        <li><button id='button54' style='height:40px;width:120px;'>Reset</button></li>
+                    </ul>
+                </li>
+                <li>
+                    <div id='filename' style='display:none;'></div>
+                <li>
+        </ul>
+        </NOBR>
+    </div>
+    <div id='controller-box' class='video-controls'>
+        <div class='controls-left'>
+            <button id='button4' class='btn-circle'><i id='icon-play' class='fa-solid fa-play'></i></button>
+            <button id='button31' class='btn-circle'><i class='fa-solid fa-stop'></i></button>
+        </div>
+        <div id='progress-wrap'>
+            <div id='progress-out'>
+                <div id='progress-in'></div>
+            </div>
+            <div id='progress-thumb'></div>
+        </div>
+        <div class='controls-right'>
+            <div class='time-display' id='time-display-container'>
+                <span class='current-time' id='curr-time-text'>0:00</span>
+                <span class='separator'>/</span>
+                <span class='total-time' id='total-time-text'>0:00</span>
+            </div>
+            <div id='volumelevel' style='display:none;'></div>
+            <div class='volume-container'>
+                <button id='button34' class='btn-circle'><i id='icon-mute' class='fa-solid fa-volume-high'></i></button>
+                <input type='range' id='vol-slider' min='0' max='1' step='0.05' value='1'
+                    onmousedown='event.stopPropagation()' ontouchstart='event.stopPropagation()'
+                    onclick='event.stopPropagation()'
+                    oninput='vlevel=this.value; if(window.video) video.volume=this.value;'>
+            </div>
+            <button id='button3' class='btn-circle' style='margin-right:10px;'><span
+                    style='font-weight:900; font-size: 12px;'>L/R</span></button>
+            <button id='btn-settings' onclick='toggleSettings()' class='btn-circle'><span
+                    style='font-weight:900; font-size: 14px;'>3D</span></button>
+        </div>
+    </div>
+    <div id='settings-menu'>
+        <div class='settings-group'>
+            <div style='padding:8px; font-weight:bold; color:#aaa; border-bottom:1px solid #444; margin-bottom:5px;'>3D
+                Mode: <span id='button0'>Stereo</span></div>
+            <button id='button20'>SBS</button>
+            <button id='button29'>LR/RL</button>
+            <button id='button22'>Dubois</button>
+            <button id='button23'>Color</button>
+            <button id='button24'>Gray</button>
+            <button id='button25'>H_Int</button>
+            <button id='button27'>3DLCD</button>
+            <button id='button28'>HSBS</button>
+            <button id='button36'>Mirror</button>
+            <button id='button35'>2D</button>
+        </div>
+    </div>
+    <script>function toggleSettings() { var m = document.getElementById('settings-menu'); if (m.style.display === 'flex') { m.style.display = 'none'; m.classList.remove('active'); } else { m.style.display = 'flex'; setTimeout(function () { m.classList.add('active') }, 10); } }</script>
+    <div id='progtime' style='display:none;'></div>
+    <script>
+        // Initialize the 3D Viewer
+        var view = new ThView({
             id: 'image1',
-            file: ['p', '001.jpg', 'ph', '002.jpg', 'pv', '003.jpg', 'pvh', "004.jpg", 'mvh', '005.mp4'],
+            file: []
         });
     </script>
 </body>

@@ -120,7 +120,7 @@ button:active {
 }
 
 #progress-in {
-    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    background: #ffffff;
     height: 100%;
     border-radius: 3px;
     position: relative;
@@ -174,7 +174,7 @@ button:active {
     height: 4px;
     /* Thin sleek line like progress */
     cursor: pointer;
-    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    background: #ffffff;
     border-radius: 2px;
     border: none;
 }
@@ -184,7 +184,7 @@ button:active {
     width: 100%;
     height: 4px;
     cursor: pointer;
-    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    background: #ffffff;
     border-radius: 2px;
     border: none;
 }
@@ -298,7 +298,7 @@ button:active {
 }
 
 #settings-menu button:hover {
-    background: linear-gradient(90deg, #ff4444 0%, #4444ff 100%);
+    background: #444444;
     /* Red/Blue 3D Theme */
     border-color: transparent;
     transform: scale(1.02);
@@ -343,7 +343,7 @@ button:active {
 }
 
 .volume-container #button34:hover {
-    color: #00AAFF;
+    color: #ffffff;
     /* Highlight icon on hover */
 }
 
@@ -511,7 +511,7 @@ button:active {
 /* Hover Effect for Dropdown Items (Red/Blue Gradient) */
 #dropmenu li ul li button:hover,
 #dropmenu li ul li label:hover {
-    background: linear-gradient(90deg, #ff4444 0%, #4444ff 100%) !important;
+    background: #444444 !important;
     border-color: transparent !important;
     transform: scale(1.02);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
