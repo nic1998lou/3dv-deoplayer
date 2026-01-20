@@ -1,0 +1,57 @@
+name: Build Android APK
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+
+      - name: Install Cordova
+        run: npm install -g cordova
+
+      - name: Create Cordova Project
+        run: |
+          cordova create myApp com.example.viewer3d "3D Viewer"
+          cd myApp
+          cordova platform add android
+
+      - name: Copy App Files to Cordova
+        run: |
+          # Remove default cordova www files
+          rm -rf myApp/www/*
+          # Copy our project files (excluding the cordova project itself)
+          # We use rsync to exclude the myApp folder we just made to avoid recursion
+          rsync -av --progress . myApp/www/ --exclude myApp --exclude .git --exclude .github
+
+      - name: Configure Landscape Orientation & Fullscreen
+        run: |
+          cd myApp
+          # Inject landscape preference into config.xml
+          sed -i '/<\/widget>/i \    <preference name="Orientation" value="landscape" />' config.xml
+          sed -i '/<\/widget>/i \    <preference name="Fullscreen" value="true" />' config.xml
+
+      - name: Build APK (Debug)
+        run: |
+          cd myApp
+          cordova build android --debug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: 3d-viewer-apk
+          path: myApp/platforms/android/app/build/outputs/apk/debug/app-debug.apk
