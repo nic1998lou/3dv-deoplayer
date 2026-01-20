@@ -1,0 +1,575 @@
+/* Modern Video Player Style */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #0f0f13;
+    color: #ffffff;
+    margin: 0;
+    overflow: hidden;
+}
+
+/* Remove default ugly styles from buttons */
+button {
+    background: transparent;
+    border: none;
+    color: #e0e0e0;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    padding: 8px 16px;
+    /* Pill padding */
+    border-radius: 100px;
+    /* Pill shape by default for text */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+button:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+/* Perfect Circle Button for Icons */
+.btn-circle {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: 50% !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1 / 1;
+}
+
+/* The Main Control Bar Container */
+#controller-box {
+    position: absolute !important;
+    bottom: 30px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 90% !important;
+    max-width: 800px;
+    height: 60px;
+    background: rgba(20, 20, 25, 0.85);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    z-index: 1000;
+    box-sizing: border-box;
+    /* Include padding in width for correct alignment */
+}
+
+.controls-left,
+.controls-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#progress-wrap {
+    flex-grow: 1;
+    margin: 0 20px;
+    height: 30px;
+    /* Large hit area */
+    background: transparent;
+    /* Invisible container */
+    cursor: pointer;
+    position: relative;
+    /* Ensure touches/clicks work */
+    z-index: 10;
+    overflow: visible !important;
+    display: flex;
+    /* To center the line */
+    align-items: center;
+}
+
+/* Removed hover effect to keep fixed size */
+/* #progress-wrap:hover #progress-out { height: 6px; } */
+
+/* IMPORTANT: This was missing, making the click target tiny/invisible */
+/* The VISUAL track */
+#progress-out {
+    width: 100%;
+    height: 6px !important;
+    /* Fixed thicker height */
+    min-height: 6px !important;
+    border-radius: 3px;
+    cursor: pointer;
+    overflow: visible !important;
+    background: rgba(255, 255, 255, 0.2);
+    /* Track color moved here */
+    transition: none !important;
+    /* KILL ALL ANIMATION */
+    position: relative;
+    /* For thumb positioning */
+}
+
+#progress-in {
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    height: 100%;
+    border-radius: 3px;
+    position: relative;
+    width: 0%;
+    /* Start at 0% */
+    /* transform-origin: left; Removed for width-based anim */
+    overflow: visible !important;
+}
+
+#progress-thumb {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 12px !important;
+    height: 12px !important;
+    min-width: 12px !important;
+    min-height: 12px !important;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    opacity: 1;
+    transition: left 0.1s linear;
+    /* Smooth movement */
+    transform: translate(-50%, -50%) !important;
+    /* Perfect centering */
+    z-index: 20;
+    pointer-events: none;
+    /* Let clicks pass through to the bar */
+}
+
+/* Removed hover dependency */
+/* #progress-wrap:hover #progress-in::after { opacity: 1; } */
+
+/* Volume Slider */
+#vol-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100px;
+    height: 4px;
+    /* Taller touch area */
+    background: transparent;
+    margin: 0 10px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+/* Chrome/Safari/Edge Track */
+/* Chrome/Safari/Edge Track */
+#vol-slider::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px;
+    /* Thin sleek line like progress */
+    cursor: pointer;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    border-radius: 2px;
+    border: none;
+}
+
+/* Firefox Track */
+#vol-slider::-moz-range-track {
+    width: 100%;
+    height: 4px;
+    cursor: pointer;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    border-radius: 2px;
+    border: none;
+}
+
+/* Chrome/Safari/Edge Thumb */
+/* Chrome/Safari/Edge Thumb */
+#vol-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    background: #ffffff;
+    /* White thumb */
+    cursor: pointer;
+    margin-top: -4px;
+    /* Center (4px track - 12px thumb) / 2 */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    /* Glow effect */
+    position: relative;
+    z-index: 10001;
+}
+
+/* Firefox Thumb */
+#vol-slider::-moz-range-thumb {
+    height: 12px;
+    width: 12px;
+    border: none;
+    border-radius: 50%;
+    background: #ffffff;
+    /* White thumb */
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    /* Glow effect */
+}
+
+/* Settings Menu */
+#settings-menu {
+    position: absolute;
+    bottom: 75px;
+    /* Adjusted closer to bar */
+    /* Above the 60px bar */
+    right: 20px;
+    /* Aligned inside the bar */
+    width: 220px;
+    /* Slightly wider for pill buttons */
+    background: rgba(20, 20, 25, 0.85);
+    /* Glassmorphism match */
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: 30px;
+    /* Big rounded corners */
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    z-index: 1001;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+
+    /* Responsive Scroll */
+    max-height: 60vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    /* Firefox */
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+
+/* Scrollbar Styling for Settings */
+#settings-menu::-webkit-scrollbar {
+    width: 6px;
+}
+
+#settings-menu::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#settings-menu::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+}
+
+#settings-menu.active {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+#settings-menu button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Center text for pill look */
+    padding: 12px 20px;
+    border-radius: 50px;
+    /* Full Pill Shape */
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+    /* Visible background */
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: 8px;
+    /* Spacing between pills */
+    transition: all 0.2s ease;
+    color: white;
+    cursor: pointer;
+}
+
+#settings-menu button:hover {
+    background: linear-gradient(90deg, #ff4444 0%, #4444ff 100%);
+    /* Red/Blue 3D Theme */
+    border-color: transparent;
+    transform: scale(1.02);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.hidden {
+    display: none !important;
+}
+
+.icon-btn {
+    font-size: 18px;
+    width: 36px;
+    height: 36px;
+}
+
+/* Volume Pill Container */
+.volume-container {
+    display: flex;
+    align-items: center;
+    background: transparent;
+    border: none;
+    border-radius: 50px;
+    padding: 4px 8px 4px 4px;
+    margin-right: 10px;
+    transition: background 0.2s;
+}
+
+.volume-container:hover {
+    background: transparent;
+}
+
+/* Adjust Mute Button inside Pill */
+.volume-container #button34 {
+    background: transparent !important;
+    /* Remove individual button bg */
+    width: 32px;
+    height: 32px;
+    transform: none !important;
+    /* Disable scale effect on container internal */
+    margin: 0 !important;
+}
+
+.volume-container #button34:hover {
+    color: #00AAFF;
+    /* Highlight icon on hover */
+}
+
+/* Adjust Slider inside Pill */
+#vol-slider {
+    margin: 0 0 0 5px !important;
+    /* Small gap from icon */
+    width: 80px !important;
+    /* Fit inside pill */
+    display: inline-block !important;
+    position: relative !important;
+    z-index: 10000 !important;
+    /* Force clickability */
+    cursor: pointer !important;
+}
+
+/* --- Top Menu Glassmorphism --- */
+.top-bar {
+    position: absolute !important;
+    top: 20px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    background: transparent !important;
+    /* Invisible wrapper */
+    border-radius: 0 !important;
+    padding: 0 !important;
+    box-shadow: none;
+    border: none;
+    z-index: 2000;
+    display: flex;
+    justify-content: flex-start;
+    /* Align content to the left */
+    align-items: center;
+    width: 90% !important;
+    /* Match bottom bar width */
+    max-width: 800px;
+    /* Match bottom bar max-width */
+    white-space: nowrap;
+    /* Allow pointer events only on content (optional, but safer) */
+    pointer-events: none;
+}
+
+/* Fix Dropmenu layout to be horizontal flex */
+#dropmenu {
+    display: flex !important;
+    align-items: center;
+    gap: 15px;
+    /* Spacing between icons */
+    margin: 0 !important;
+
+    /* Move Glassmorphism HERE */
+    background: rgba(20, 20, 25, 0.85) !important;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: 50px !important;
+    padding: 10px 20px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+
+    width: auto !important;
+    height: auto !important;
+    pointer-events: auto;
+    /* Restore clicks */
+}
+
+#dropmenu>li {
+    float: none !important;
+    /* Disable float */
+}
+
+/* Override injected button styles for top bar */
+#dropmenu>li>button.btn-circle {
+    width: 40px !important;
+    height: 40px !important;
+    background: transparent !important;
+    border: none !important;
+    color: #e0e0e0;
+    margin: 0 !important;
+    font-size: 16px !important;
+    /* Icon size */
+}
+
+#dropmenu>li>button.btn-circle:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    transform: scale(1.1);
+    color: #fff !important;
+}
+
+/* --- Styled Dropdowns for Top Menu (File, Help) --- */
+#dropmenu li ul {
+    background: rgba(20, 20, 25, 0.85) !important;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: 20px !important;
+    padding: 15px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    top: 55px !important;
+    /* Push down below the pill */
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 170px !important;
+    /* Fixed width for better layout */
+    display: none;
+    /* Controlled by hover/JS, but default hidden */
+    flex-direction: column;
+    gap: 5px;
+}
+
+/* Show on hover or when class is added (for mobile) */
+#dropmenu li:hover ul,
+#dropmenu li.dropdown-open ul {
+    display: flex !important;
+}
+
+/* Invisible bridge to prevent menu closing when moving mouse from button to menu */
+#dropmenu li::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    /* Starts at bottom of button */
+    left: 0;
+    width: 100%;
+    height: 30px;
+    /* Covers the gap to the menu (which is at top: 55px) */
+    background: transparent;
+    z-index: 100;
+    /* Ensure it catches the mouse */
+}
+
+#dropmenu li ul li {
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Style Dropdown Buttons/Labels as Pills */
+#dropmenu li ul li button,
+#dropmenu li ul li label {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    height: auto !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 10px !important;
+    /* Smaller padding */
+    border-radius: 50px !important;
+    font-size: 13px !important;
+    /* Smaller text */
+    font-weight: 500 !important;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    margin-bottom: 5px !important;
+    transition: all 0.2s ease;
+    color: white !important;
+    cursor: pointer !important;
+    line-height: normal !important;
+    /* Fix label vertical alignment */
+}
+
+/* Hover Effect for Dropdown Items (Red/Blue Gradient) */
+#dropmenu li ul li button:hover,
+#dropmenu li ul li label:hover {
+    background: linear-gradient(90deg, #ff4444 0%, #4444ff 100%) !important;
+    border-color: transparent !important;
+    transform: scale(1.02);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    color: white !important;
+}
+
+/* Hide the ugly file input */
+#dropmenu li ul li input[type="file"] {
+    display: none !important;
+}
+
+/* Time Display */
+.time-display {
+    background-color: #1a1a1a;
+    color: #ffffff;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 0.5px;
+    margin-right: 15px;
+    white-space: nowrap;
+}
+
+.current-time {
+    color: #ffffff;
+}
+
+.separator {
+    margin: 0 6px;
+    color: #bbbbbb;
+}
+
+.total-time {
+    color: #ffffff;
+}
+
+/* --- UI Animations --- */
+
+/* Base state for animated elements */
+#controller-box,
+#btn {
+    /* Top menu container */
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.5s ease, visibility 0s linear 0s;
+    /* Fast fade in */
+}
+
+/* Hidden state with slow fade out */
+.ui-hidden {
+    opacity: 0 !important;
+    visibility: hidden;
+    transition: opacity 2.5s ease, visibility 0s linear 2.5s !important;
+    /* Slow fade out (2.5s) */
+    pointer-events: none !important;
+}

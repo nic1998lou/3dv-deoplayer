@@ -1,0 +1,15 @@
+HTML5 3D Viewer
+
+How to use
+See help file.
+
+How to make your own "index.html"
+file:['p','001.jpg','ph','002.jpg','pv','003.jpg','pvh',"004.jpg",'mvh','005.mp4'],
+'m' : SBS Movie
+'mh': Half width SBS Movie
+'mv' : Top/Bottom Movie
+'mvh': Half height T/B Movie
+'p' : SBS still image
+'ph' : Half width SBS still image
+'pv' : Top/Bottom still image
+'pvh': Half height T/B still image

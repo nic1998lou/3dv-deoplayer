@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport"
+        content="width=device-width,height=device-height, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="apple-touch-icon" href="icon.png" />
+    <title>HTML5 3D Viewer</title>
+    <script type="text/javascript">var Filenamedisplay = 1;</script>
+    <script type="text/javascript" src="three.min.js"></script>
+    <script type="text/javascript" src="3dviewer017.js?" + new Date().getTime()></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+
+<body>
+    <script type="text/javascript">
+        var img1 = new ThView({
+            id: 'image1',
+            file: ['p', '001.jpg', 'ph', '002.jpg', 'pv', '003.jpg', 'pvh', "004.jpg", 'mvh', '005.mp4'],
+        });
+    </script>
+</body>
+
+</html>
