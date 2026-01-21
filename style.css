@@ -287,9 +287,9 @@ button:active {
     font-size: 14px;
     font-weight: 500;
     text-align: center;
-    background: rgba(255, 255, 255, 0.1);
-    /* Visible background */
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: #2a2a2a;
+    /* Solid background */
+    border: 1px solid #444;
     margin-bottom: 8px;
     /* Spacing between pills */
     transition: all 0.2s ease;
@@ -300,9 +300,9 @@ button:active {
 #settings-menu button:hover {
     background: #444444;
     /* Red/Blue 3D Theme */
-    border-color: transparent;
+    border-color: #666;
     transform: scale(1.02);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
 }
 
 .hidden {
@@ -569,7 +569,7 @@ button:active {
 .ui-hidden {
     opacity: 0 !important;
     visibility: hidden;
-    transition: opacity 2.5s ease, visibility 0s linear 2.5s !important;
-    /* Slow fade out (2.5s) */
+    transition: opacity 0.5s ease, visibility 0s linear 0.5s !important;
+    /* Faster fade out (0.5s) */
     pointer-events: none !important;
 }

@@ -179,14 +179,16 @@
     <div id='btn' class='top-bar'>
         <ul id='dropmenu'>
             <NOBR>
-                <li><button id='button9' class='btn-circle' title='Close'><i class='fa-solid fa-xmark'></i></button>
+                <li><button id='button9' class='btn-circle' title='Fechar'><i class='fa-solid fa-xmark'></i></button>
                 </li>
-                <li><button id='button90' class='btn-circle' title='Record'><i class='fa-solid fa-video'></i></button>
+                <li><button id='button90' class='btn-circle' title='Gravar'><i class='fa-solid fa-video'></i></button>
+                    <span id='rec-time'
+                        style='display:none; color:red; font-weight:bold; margin-left:5px; font-size:14px; vertical-align:middle;'>0:00</span>
                 </li>
-                <li><button id='button6' class='btn-circle' title='Fullscreen'><i
+                <li><button id='button6' class='btn-circle' title='Tela Cheia'><i
                             class='fa-solid fa-expand'></i></button></li>
-                <li><button id='button8' class='btn-circle' title='Fit'><svg fill='#ffffff' width='18px' height='18px'
-                            viewBox='0 0 32 32' id='icon' xmlns='http://www.w3.org/2000/svg'>
+                <li><button id='button8' class='btn-circle' title='Ajustar'><svg fill='#ffffff' width='18px'
+                            height='18px' viewBox='0 0 32 32' id='icon' xmlns='http://www.w3.org/2000/svg'>
                             <g id='SVGRepo_bgCarrier' stroke-width='0'></g>
                             <g id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round'></g>
                             <g id='SVGRepo_iconCarrier'>
@@ -201,37 +203,35 @@
                 <li style='display:none !important;'><button id='button40' class='btn-circle' title='Slideshow'><i
                             class='fa-solid fa-images'></i></button>
                     <ul>
-                        <li><button id='button41' style='height:40px;width:100px;'>Off</button></li>
+                        <li><button id='button41' style='height:40px;width:100px;'>Desl.</button></li>
                         <li><button id='button42' style='height:40px;width:100px;'>3s</button></li>
                         <li><button id='button43' style='height:40px;width:100px;'>5s</button></li>
                         <li><button id='button44' style='height:40px;width:100px;'>7s</button></li>
                         <li><button id='button45' style='height:40px;width:100px;'>10s</button></li>
                     </ul>
                 </li>
-                <li><button id='button1' class='btn-circle' title='Previous' style='display:none !important;'><i
+                <li><button id='button1' class='btn-circle' title='Anterior' style='display:none !important;'><i
                             class='fa-solid fa-chevron-left'></i></button></li>
-                <li><button id='button2' class='btn-circle' title='Next' style='display:none !important;'><i
+                <li><button id='button2' class='btn-circle' title='Próximo' style='display:none !important;'><i
                             class='fa-solid fa-chevron-right'></i></button></li>
-                <li><button id='button60' class='btn-circle' title='Files'><i
+                <li><button id='button60' class='btn-circle' title='Arquivos'><i
                             class='fa-solid fa-folder-open'></i></button>
                     <ul>
                         <li><input class='test' type='file' id='files' name='files[]' multiple><label for='files'
-                                style='height:44px; width:120px;'>Full SBS</label></li>
+                                style='height:44px; width:120px;'>SBS Cheio</label></li>
                         <li><input class='test' type='file' id='files2' name='files[]' multiple><label for='files2'
-                                style='height:44px; width:120px;'>Half SBS</label></li>
+                                style='height:44px; width:120px;'>SBS Metade</label></li>
                         <li><input class='test' type='file' id='files3' name='files[]' multiple><label for='files3'
-                                style='height:44px; width:120px;'>Full T/B</label></li>
+                                style='height:44px; width:120px;'>T/B Cheio</label></li>
                         <li><input class='test' type='file' id='files4' name='files[]' multiple><label for='files4'
-                                style='height:44px; width:120px;'>Half T/B</label></li>
+                                style='height:44px; width:120px;'>T/B Metade</label></li>
                     </ul>
                 </li>
-                <li><button id='button50' class='btn-circle' title='Help'><i
+                <li><button id='button50' class='btn-circle' title='Ajuda'><i
                             class='fa-solid fa-circle-question'></i></button>
                     <ul>
-                        <li><button id='button52' style='height:40px;width:120px;'>English</button></li>
-                        <li><button id='button51' style='height:40px;width:120px;'>Japanese</button></li>
-                        <li><button id='button53' style='height:40px;width:120px;'>Version</button></li>
-                        <li><button id='button54' style='height:40px;width:120px;'>Reset</button></li>
+                        <li><button id='button52' style='height:40px;width:120px;'>Sobre</button></li>
+                        <li><button id='button53' style='height:40px;width:120px;'>Versão</button></li>
                     </ul>
                 </li>
                 <li>
@@ -239,6 +239,21 @@
                 <li>
         </ul>
         </NOBR>
+    </div>
+    <div id='about-modal' class='ui-hidden'
+        style='position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:rgba(20, 20, 25, 0.85); backdrop-filter:blur(15px); -webkit-backdrop-filter:blur(15px); padding:30px; border-radius:30px; border:1px solid rgba(255, 255, 255, 0.05); text-align:center; z-index:9999; box-shadow:0 10px 30px rgba(0,0,0,0.5); max-width:90%; width:300px; color:white; font-family:"Inter", sans-serif;'>
+        <h2 style='margin-top:0; margin-bottom:20px; font-weight:600;'>Sobre</h2>
+        <p style='margin-bottom:10px; color:#e0e0e0;'>Criado por: Muttyan's.</p>
+        <p style='margin:5px 0;'><a href='https://stereo.jpn.org/index.html' target='_blank'
+                style='color:#ffffff; text-decoration:none; opacity:0.7; font-size:14px;'>stereo.jpn.org</a></p>
+        <p style='margin:5px 0;'><a href='https://suto.bex.jp/html5/3dviewer.html' target='_blank'
+                style='color:#ffffff; text-decoration:none; opacity:0.7; font-size:14px;'>3dviewer</a>
+        </p>
+        <p style='margin:15px 0 5px 0; font-size:11px; color:#888; font-weight:300;'>Design feito com amor por:
+            @NicLouFoto
+        </p>
+        <button id='close-about'
+            style='margin:10px auto 0 auto; display:flex; justify-content:center; align-items:center; width:120px; background:#2a2a2a; border:1px solid #444; padding:12px 20px; color:white; border-radius:50px; cursor:pointer; font-weight:500; transition:all 0.2s ease;'>Fechar</button>
     </div>
     <div id='controller-box' class='video-controls'>
         <div class='controls-left'>
@@ -273,7 +288,7 @@
     </div>
     <div id='settings-menu'>
         <div class='settings-group'>
-            <div style='padding:8px; font-weight:bold; color:#aaa; border-bottom:1px solid #444; margin-bottom:5px;'>3D
+            <div style='display:none;'>3D
                 Mode: <span id='button0'>Stereo</span></div>
             <button id='button20'>SBS</button>
             <button id='button29'>LR/RL</button>

@@ -3,11 +3,11 @@
  * Copyright 2014, aike (@aike1000)
  *
  */
-var verno = '3D Viewer Ver1.7';
+var verno = '3D Viewer Ver1.7.1 - Redesign';
 var stType = 1;		//Default Stereo type:1 SBS
 var ssint = 0;		//Default Slide show interval:0 Off
 var swap = true;	//Default Swap status:True L/R
-var menutime = 30;	//menu showing time 30x0.1=3.0Sec
+var menutime = 15;	//menu showing time 15x0.1=1.5Sec
 var curmtime = 0;
 var isHoveringControls = false;
 var dltv = 0.2;		//Left/Right adjustment unit
@@ -67,6 +67,8 @@ var imgw;
 var imgh;
 var bClear = false;
 var timeout_id = null;
+var recTimerInterval = null;
+var recStartTime = 0;
 var is1st = true;
 var Param = "";
 var vmuted = false;
@@ -1018,16 +1020,33 @@ ThView.prototype.show = function () {
 				blobUrl = URL.createObjectURL(blob);
 			};
 			recmode = 1;
-			button90.innerHTML = "Stop";
+			button90.innerHTML = "<i class='fa-solid fa-stop'></i>";
 			var element = document.getElementById('button90');
-			element.style.color = "#ff8888";
+			element.style.color = "#ff0000"; // Red for Stop/Recording
+
+			// Start Timer
+			var recTimeDisplay = document.getElementById('rec-time');
+			recTimeDisplay.style.display = 'inline-block';
+			recTimeDisplay.innerText = "0:00";
+			recStartTime = Date.now();
+			recTimerInterval = setInterval(function () {
+				var diff = Math.floor((Date.now() - recStartTime) / 1000);
+				var m = Math.floor(diff / 60);
+				var s = diff % 60;
+				recTimeDisplay.innerText = m + ":" + (s < 10 ? "0" : "") + s;
+			}, 1000);
 		}
 		else if (recmode == 1) {
 			recorder.stop();
 			recmode = 2;
-			button90.innerHTML = "DL";
+			button90.innerHTML = "<i class='fa-solid fa-file-arrow-down'></i>"; // Download Icon
 			var element = document.getElementById('button90');
-			element.style.color = "#00ffff";
+			element.style.color = "#00ffff"; // Cyan for Download
+
+			// Stop Timer
+			clearInterval(recTimerInterval);
+			recTimerInterval = null;
+			// Keep timer visible showing total recorded length
 		}
 		else if (recmode == 2) {
 			const a = document.createElement('a')
@@ -1039,9 +1058,13 @@ ThView.prototype.show = function () {
 			window.URL.revokeObjectURL(blobUrl)
 			document.body.removeChild(a)
 			recmode = 0;
-			button90.innerHTML = "Rec";
+			button90.innerHTML = "<i class='fa-solid fa-video'></i>"; // Back to camera icon
 			var element = document.getElementById('button90');
-			element.style.color = "#aaaaaa";
+			element.style.color = "#e0e0e0"; // Default Gray
+
+			// Hide Timer
+			var recTimeDisplay = document.getElementById('rec-time');
+			recTimeDisplay.style.display = 'none';
 		}
 	}
 	button0.onclick = function () {
@@ -1091,28 +1114,29 @@ ThView.prototype.show = function () {
 	button45.onclick = function () {
 		settimer(10);
 	}
-	button51.onclick = function () {
-		window.open("https://suto.bex.jp/html5/help/jpn/3dviewer/index.html");
-	}
+
 
 	button52.onclick = function () {
-		window.open("https://suto.bex.jp/html5/help/eng/3dviewer/index.html");
+		var modal = document.getElementById('about-modal');
+		if (modal) {
+			modal.classList.remove('ui-hidden');
+			modal.style.display = 'block'; // Ensure it's visible if hidden by other logic
+		}
+	}
+
+	var closeAboutBtn = document.getElementById('close-about');
+	if (closeAboutBtn) {
+		closeAboutBtn.onclick = function () {
+			var modal = document.getElementById('about-modal');
+			if (modal) {
+				modal.classList.add('ui-hidden');
+				setTimeout(function () { modal.style.display = 'none'; }, 500); // Wait for transition
+			}
+		}
 	}
 
 	button53.onclick = function () {
 		alert(verno);
-	}
-	button54.onclick = function () {
-		bClear = true;
-		try {
-			localStorage.clear();
-		} catch (err) {
-			var expire = new Date();
-			expire.setTime(expire.getTime() + 1000 * 3600 * 24);
-			var nCok = "" + stmov + "&" + st180 + "&" + st360;
-			document.cookie = "" + nCok + "; expires=" + expire.toUTCString();
-		}
-		location.reload();
 	}
 	button31.onclick = function () {
 		video.pause();
@@ -1862,12 +1886,12 @@ ThView.prototype.show = function () {
 			else if (stType == 1) stname = "SBS ";
 			else if (stType == 2) stname = "LR/RL ";
 			else if (stType == 3) stname = "Dubois ";
-			else if (stType == 4) stname = "Color ";
-			else if (stType == 5) stname = "Gray ";
+			else if (stType == 4) stname = "Cor ";
+			else if (stType == 5) stname = "Cinza ";
 			else if (stType == 6) stname = "H_Int ";
 			else if (stType == 7) stname = "3DLCD ";
 			else if (stType == 8) stname = "HSBS ";
-			else if (stType == 9) stname = "Mirror ";
+			else if (stType == 9) stname = "Espelho ";
 			if (swap) swpname = "L/R ";
 			else swpname = "R/L ";
 			button0.innerHTML = "" + stname;
@@ -1884,12 +1908,12 @@ ThView.prototype.show = function () {
 					}
 				}
 				if (ssint == 0) button40.innerHTML = "Loop";
-				else button40.innerHTML = "Cont";
+				else button40.innerHTML = "Cont."; // Continuous
 			}
 			else {
 				// button4.innerHTML = " Still";
-				if (ssint == 0) button40.innerHTML = "Off";
-				else button40.innerHTML = "" + ssint + " Sec.";
+				if (ssint == 0) button40.innerHTML = "Desl."; // Off
+				else button40.innerHTML = "" + ssint + " Seg."; // Sec.
 			}
 		}
 	};
